@@ -16,12 +16,11 @@
  */
 package com.alipay.sofa.rpc.server.bolt;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import com.alipay.sofa.rpc.common.RpcConstants;
 import com.alipay.sofa.rpc.common.utils.NetUtils;
 import com.alipay.sofa.rpc.config.ServerConfig;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  *
@@ -44,6 +43,21 @@ public class BoltServerTest {
         Assert.assertTrue(server.started);
         Assert.assertTrue(NetUtils.canTelnet(host, port, 1000));
 
+        ServerConfig serverConfig2 = new ServerConfig();
+        serverConfig2.setBoundHost(host);
+        serverConfig2.setPort(port);
+        serverConfig2.setProtocol(RpcConstants.PROTOCOL_TYPE_BOLT);
+        BoltServer server2 = new BoltServer();
+        server2.init(serverConfig2);
+        boolean error = false;
+        try {
+            server2.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+            error = true;
+        }
+        Assert.assertTrue(error);
+        
         server.stop();
         Assert.assertFalse(server.started);
         Thread.sleep(1000); // 升级bolt后删除此行
